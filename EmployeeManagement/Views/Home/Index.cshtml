@@ -1,28 +1,26 @@
 ﻿@model IEnumerable<EmployeeManagement.Models.Employee>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <title></title>
-    </head>
-    <body>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Department</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach(var employee in Model)
-                {
-                    <tr>
-                        <th>@employee.Id</th>
-                        <th>@employee.Name</th>
-                        <th>@employee.Department</th>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </body>
-</html>
+@{ 
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Index Page";
+}
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Department</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var employee in Model)
+        {
+            <tr>
+                <th>@employee.Id</th>
+                <th>@employee.Name</th>
+                <th>@employee.Department</th>
+            </tr>
+        }
+    </tbody>
+</table>
