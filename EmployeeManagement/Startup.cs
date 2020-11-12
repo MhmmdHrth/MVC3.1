@@ -24,7 +24,7 @@ namespace EmployeeManagement
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            services.AddMvc(config => config.EnableEndpointRouting = false);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -34,9 +34,9 @@ namespace EmployeeManagement
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseFileServer();
-
             app.UseRouting();
+
+            app.UseStaticFiles();
 
             app.UseMvcWithDefaultRoute();
 
@@ -44,7 +44,7 @@ namespace EmployeeManagement
             {
                 endpoints.MapGet("/", async context =>
                 {
-                    await context.Response.WriteAsync(env.EnvironmentName);
+                    await context.Response.WriteAsync("Hello World");
                 });
             });
         }
