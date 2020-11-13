@@ -4,15 +4,24 @@
     ViewBag.Title = "Details Page";
 }
 
-<h1>@Model.PageTitle</h1>
-
-<div>
-    Name: @Model.Employee.Name
-</div>
-<div>
-    Email: @Model.Employee.Email
-</div>
-<div>
-    Department: @Model.Employee.Department
+<div class="row">
+    <div class="justify-content-center m-3">
+        <div class="col-8">
+            <div class="card-header">
+                <h1>@Model.Employee.Name</h1>
+            </div>
+            <div class="card-body text-center">
+                <img class="card-img-top" src="~/Images/tahfiz.jpg" />
+                <h4>Employee ID: @Model.Employee.Id</h4>
+                <h4>Email: @Model.Employee.Email</h4>
+                <h4>Department @Model.Employee.Department</h4>
+            </div>
+            <div class="card-footer text-center">
+                <a href="#" class="btn btn-primary">View</a>
+                <a href="#" class="btn btn-primary">Edit</a>
+                <a href="#" class="btn btn-danger">Delete</a>
+            </div>
+        </div>
+    </div>
 </div>
 
