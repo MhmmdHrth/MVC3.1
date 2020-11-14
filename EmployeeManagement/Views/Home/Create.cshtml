@@ -9,10 +9,10 @@
         <label asp-for="Email"></label>
         <input asp-for="Email" />
     </div>
-    <div>
-        <label asp-for="Department"></label>
-        <select asp-for="Department" asp-items="Html.GetEnumSelectList<DepartmentType>()"></select>
-    </div>
+    <div> 
+        <label asp-for="Department"></label> 
+        <select asp-for="Department" asp-items="Html.GetEnumSelectList<DepartmentType>()"></select> 
+    </div> 
     <div>
         <button type="submit">Create</button>
     </div>

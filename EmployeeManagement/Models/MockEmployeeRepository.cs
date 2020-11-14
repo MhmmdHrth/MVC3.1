@@ -13,9 +13,9 @@ namespace EmployeeManagement.Models
         {
             employees = new List<Employee>
             {
-                new Employee {Id = 1,Name="Mary", Department="HR", Email ="mary@gmail.com"},
-                new Employee {Id = 2,Name="John", Department="IT", Email ="john@gmail.com"},
-                new Employee {Id = 3,Name="Sam", Department="IT", Email ="sam@gmail.com"},
+                new Employee {Id = 1,Name="Mary", Department=DepartmentType.HR, Email ="mary@gmail.com"},
+                new Employee {Id = 2,Name="John", Department=DepartmentType.IT, Email ="john@gmail.com"},
+                new Employee {Id = 3,Name="Sam", Department=DepartmentType.Payroll, Email ="sam@gmail.com"},
             };
         }
 
