@@ -33,5 +33,10 @@ namespace EmployeeManagement.Controllers
 
             return View(homeDetailsVM);
         }
+
+        public ViewResult Create()
+        {
+            return View();
+        }
     }
 }
