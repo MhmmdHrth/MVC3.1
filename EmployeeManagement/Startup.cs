@@ -44,14 +44,6 @@ namespace EmployeeManagement
             {
                 route.MapRoute("default", "{controller=Home}/{action=Index}/{id?}");
             });
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Hello World");
-                });
-            });
         }
     }
 }
