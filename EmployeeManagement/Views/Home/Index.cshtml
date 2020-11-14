@@ -7,9 +7,9 @@
             <div class="card-header">
                 <h3>@employee.Name</h3>
             </div>
-            <img class="card-img-top" src="~/Images/tahfiz.jpg" />
+            <img asp-append-version="true" class="card-img-top" src="~/Images/tahfiz.jpg" />
             <div class="card-footer text-center">
-                <a href="/home/details/@employee.id" class="btn btn-primary">Back</a>
+                <a href="/home/details/@employee.Id" class="btn btn-primary">Back</a>
                 <a href="#" class="btn btn-primary">Edit</a>
                 <a href="#" class="btn btn-danger">Delete</a>
             </div>
