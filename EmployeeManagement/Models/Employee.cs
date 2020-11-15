@@ -18,6 +18,6 @@ namespace EmployeeManagement.Models
         [Required]
         public string Email { get; set; }
 
-        public DepartmentType Department { get; set; }
+        public DepartmentType? Department { get; set; }
     }
 }
