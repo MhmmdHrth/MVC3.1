@@ -31,7 +31,7 @@ namespace EmployeeManagement
                 (options => options.UseSqlServer(Configuration.GetConnectionString("EmployeeDB")));
 
             services.AddMvc(config => config.EnableEndpointRouting = false);
-            services.AddSingleton<IEmployeeRepository, MockEmployeeRepository>();
+            services.AddScoped<IEmployeeRepository, SQLEmployeeRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
