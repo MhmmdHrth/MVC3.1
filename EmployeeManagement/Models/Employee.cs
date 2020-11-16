@@ -19,5 +19,7 @@ namespace EmployeeManagement.Models
         public string Email { get; set; }
 
         public DepartmentType? Department { get; set; }
+
+        public string PhotoPath { get; set; }
     }
 }
