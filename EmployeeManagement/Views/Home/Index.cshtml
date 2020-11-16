@@ -1,17 +1,22 @@
 ﻿@model IEnumerable<Employee>
 
-<div class="card-deck">
+<div class="row">
     @foreach (var employee in Model)
     {
-        <div class="card m-3">
-            <div class="card-header">
-                <h3>@employee.Name</h3>
-            </div>
-            <img asp-append-version="true" class="card-img-top" src="~/Images/tahfiz.jpg" />
-            <div class="card-footer text-center">
-                <a asp-action="details" asp-route-id="@employee.Id" class="btn btn-primary">Back</a>
-                <a href="#" class="btn btn-primary">Edit</a>
-                <a href="#" class="btn btn-danger">Delete</a>
+        <div class="col-4">
+            @{ 
+                var photoPath = String.Format($"~/Images/{employee.PhotoPath ?? "tahfiz.jpg"}");
+            }
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h3>@employee.Name</h3>
+                </div>
+                <img asp-append-version="true" class="card-img-top imageThumbnail" src="@photoPath" />
+                <div class="card-footer text-center">
+                    <a asp-action="details" asp-route-id="@employee.Id" class="btn btn-primary">Details</a>
+                    <a href="#" class="btn btn-success">Edit</a>
+                    <a href="#" class="btn btn-danger">Delete</a>
+                </div>
             </div>
         </div>
     }

@@ -2,26 +2,24 @@
 
 @{
     ViewBag.Title = "Details Page";
+    var photoPath = String.Format($"~/Images/{Model.Employee.PhotoPath ?? "tahfiz.jpg"}");
 }
 
-<div class="row">
-    <div class="justify-content-center m-3">
-        <div class="col-8">
-            <div class="card-header">
-                <h1>@Model.Employee.Name</h1>
-            </div>
-            <div class="card-body text-center">
-                <img class="card-img-top" src="~/Images/tahfiz.jpg" />
-                <h4>Employee ID: @Model.Employee.Id</h4>
-                <h4>Email: @Model.Employee.Email</h4>
-                <h4>Department @Model.Employee.Department</h4>
-            </div>
-            <div class="card-footer text-center">
-                <a asp-action="index" class="btn btn-primary">Back</a>
-                <a href="#" class="btn btn-primary">Edit</a>
-                <a href="#" class="btn btn-danger">Delete</a>
-            </div>
-        </div>
+
+<div class="card mt-3">
+    <div class="card-header text-center">
+        <h1>@Model.Employee.Name.ToUpper()</h1>
+    </div>
+    <div class="card-body text-center">
+        <img class="card-img-top imageThumbnail" src="@photoPath" asp-append-version="true" />
+        <h4>Employee ID: @Model.Employee.Id</h4>
+        <h4>Email: @Model.Employee.Email</h4>
+        <h4>Department @Model.Employee.Department</h4>
+    </div>
+    <div class="card-footer text-center">
+        <a asp-action="index" class="btn btn-primary">Back</a>
+        <a href="#" class="btn btn-success">Edit</a>
+        <a href="#" class="btn btn-danger">Delete</a>
     </div>
 </div>
 
