@@ -122,7 +122,10 @@ namespace EmployeeManagement.Controllers
                     uniqueFileName = String.Format($"{Guid.NewGuid().ToString()}_{photo.FileName}");
 
                     string filePath = Path.Combine(uploadFolderFile, uniqueFileName);
-                    photo.CopyTo(new FileStream(filePath, FileMode.Create));
+                    using(var filestream = new FileStream(filePath, FileMode.Create))
+                    {
+                        photo.CopyTo(filestream);
+                    }
                 }
             }
 
