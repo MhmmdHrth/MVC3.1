@@ -50,13 +50,16 @@ namespace EmployeeManagement.Controllers
             if (ModelState.IsValid)
             {
                 string uniqueFileName = null;
-                if (model.PhotoPath != null)
+                if (model.Photos != null && model.Photos.Count > 0)
                 {
-                    var uploadFolderFile = Path.Combine(hostingEnvironment.WebRootPath, "Images");
-                    uniqueFileName = String.Format($"{Guid.NewGuid().ToString()}_{model.PhotoPath.FileName}");
+                    foreach(var photo in model.Photos)
+                    {
+                        var uploadFolderFile = Path.Combine(hostingEnvironment.WebRootPath, "Images");
+                        uniqueFileName = String.Format($"{Guid.NewGuid().ToString()}_{photo.FileName}");
 
-                    string filePath = Path.Combine(uploadFolderFile, uniqueFileName);
-                    model.PhotoPath.CopyTo(new FileStream(filePath, FileMode.Create));
+                        string filePath = Path.Combine(uploadFolderFile, uniqueFileName);
+                        photo.CopyTo(new FileStream(filePath, FileMode.Create));
+                    }                  
                 }
 
                 Employee newEmployee = new Employee

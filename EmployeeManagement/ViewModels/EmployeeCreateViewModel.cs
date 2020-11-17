@@ -20,6 +20,6 @@ namespace EmployeeManagement.ViewModels
 
         public DepartmentType? Department { get; set; }
 
-        public IFormFile PhotoPath { get; set; }
+        public List<IFormFile> Photos { get; set; }
     }
 }

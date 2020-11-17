@@ -25,10 +25,10 @@
         </div>
     </div>
     <div class="form-group row">
-        <label asp-for="PhotoPath" class="col-3"></label>
+        <label asp-for="Photos" class="col-3"></label>
         <div class="col-9">
             <div class="custom-file">
-                <input asp-for="PhotoPath" class="custom-file-input" />
+                <input asp-for="Photos" class="custom-file-input" multiple />
                 <label class="custom-file-label">Choose File</label>
             </div>
         </div>
@@ -49,8 +49,19 @@
             //fix customFileLabel tak tunjuk nama file
             $(document).ready(function () {
                 $('.custom-file-input').on("change", function () {
-                    var filename = $(this).val().split("\\").pop();
-                    $(this).next('.custom-file-label').html(filename);
+                    //var filename = $(this).val().split("\\").pop();
+                    //$(this).next('.custom-file-label').html(filename);
+
+                    //multiple select
+                    var filelabel = $(this).next('.custom-file-label');
+                    var files = $(this)[0].files;
+
+                    if (files.length > 1) {
+                        filelabel.html(`${files.length} files selected`);
+                    }
+                    else if (files.length == 1) {
+                        filelabel.html(files[0].name);
+                    }
                 })
             })
         </script>
