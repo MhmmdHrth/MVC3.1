@@ -29,6 +29,8 @@ namespace EmployeeManagement.Controllers
 
         public ViewResult Details(int? id)
         {
+            throw new Exception("An error on the page");
+
             Employee employee = _employeeRepository.GetEmployee(id.GetValueOrDefault(1));
 
             if(employee != null)
