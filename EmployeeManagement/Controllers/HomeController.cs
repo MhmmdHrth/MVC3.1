@@ -29,13 +29,22 @@ namespace EmployeeManagement.Controllers
 
         public ViewResult Details(int? id)
         {
-            HomeDetailsVM homeDetailsVM = new HomeDetailsVM
-            {
-                Employee = _employeeRepository.GetEmployee(id??1),
-                PageTitle = "Details Page Title"
-            };
+            Employee employee = _employeeRepository.GetEmployee(id.GetValueOrDefault(1));
 
-            return View(homeDetailsVM);
+            if(employee != null)
+            {
+
+                HomeDetailsVM homeDetailsVM = new HomeDetailsVM
+                {
+                    Employee = employee,
+                    PageTitle = "Details Page Title"
+                };
+
+                return View(homeDetailsVM);
+            }
+
+            HttpContext.Response.StatusCode = 404;
+            return View("EmployeeNotFound", id);
         }
 
         [HttpGet]
