@@ -7,6 +7,7 @@ using EmployeeManagement.Models;
 using EmployeeManagement.ViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace EmployeeManagement.Controllers
 {
@@ -14,11 +15,15 @@ namespace EmployeeManagement.Controllers
     {
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IWebHostEnvironment hostingEnvironment;
+        private readonly ILogger<HomeController> logger;
 
-        public HomeController(IEmployeeRepository employeeRepository, IWebHostEnvironment hostingEnvironment)
+        public HomeController(IEmployeeRepository employeeRepository,
+                                IWebHostEnvironment hostingEnvironment,
+                                ILogger<HomeController> logger)
         {
             _employeeRepository = employeeRepository;
             this.hostingEnvironment = hostingEnvironment;
+            this.logger = logger;
         }
 
         public ViewResult Index()
@@ -29,7 +34,14 @@ namespace EmployeeManagement.Controllers
 
         public ViewResult Details(int? id)
         {
-            throw new Exception("An error on the page");
+            //throw new Exception("An error on the page");
+
+            logger.LogTrace("Trace Log");
+            logger.LogDebug("Debug Log");
+            logger.LogInformation("Information Log");
+            logger.LogWarning("Warning Log");
+            logger.LogError("Error Log");
+            logger.LogCritical("Critical Log");
 
             Employee employee = _employeeRepository.GetEmployee(id.GetValueOrDefault(1));
 
@@ -129,10 +141,8 @@ namespace EmployeeManagement.Controllers
             {
                 foreach (var photo in model.Photos)
                 {
-                    var uploadFolderFile = Path.Combine(hostingEnvironment.WebRootPath, "Images");
                     uniqueFileName = String.Format($"{Guid.NewGuid().ToString()}_{photo.FileName}");
-
-                    string filePath = Path.Combine(uploadFolderFile, uniqueFileName);
+                    var filePath = Path.Combine(hostingEnvironment.WebRootPath, "Images", uniqueFileName);
                     using(var filestream = new FileStream(filePath, FileMode.Create))
                     {
                         photo.CopyTo(filestream);
