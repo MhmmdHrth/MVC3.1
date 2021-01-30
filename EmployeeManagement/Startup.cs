@@ -31,8 +31,13 @@ namespace EmployeeManagement
             services.AddDbContextPool<ApplicationDbContext>
                 (options => options.UseSqlServer(Configuration.GetConnectionString("EmployeeDB")));
 
-            services.AddIdentity<IdentityUser, IdentityRole>()
-                    .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddIdentity<IdentityUser, IdentityRole>(options =>
+            {
+                options.Password.RequiredLength = 8;
+                options.Password.RequiredUniqueChars = 2;
+            }).AddEntityFrameworkStores<ApplicationDbContext>();
+
+            
 
             services.AddMvc(config => config.EnableEndpointRouting = false);
             services.AddScoped<IEmployeeRepository, SQLEmployeeRepository>();
