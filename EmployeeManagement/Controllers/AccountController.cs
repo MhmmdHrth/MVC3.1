@@ -62,7 +62,7 @@ namespace EmployeeManagement.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginVM model)
+        public async Task<IActionResult> Login(LoginVM model, string ReturnUrl)
         {
             if (ModelState.IsValid)
             {
@@ -71,6 +71,11 @@ namespace EmployeeManagement.Controllers
 
                 if (result.Succeeded)
                 {
+                    if (!String.IsNullOrEmpty(ReturnUrl))
+                    {
+                        return Redirect(ReturnUrl);
+                    }
+
                     return RedirectToAction("Index", "Home");
                 }
 
