@@ -50,7 +50,8 @@ namespace EmployeeManagement
 
                 config.Filters.Add(new AuthorizeFilter(policy));
 
-            });
+            }).AddRazorRuntimeCompilation();
+
             services.AddScoped<IEmployeeRepository, SQLEmployeeRepository>();
         }
 

@@ -109,5 +109,72 @@ namespace EmployeeManagement.Controllers
             ViewBag.ErrorMessage = $"Role with ID:{model.Id} cannot be found";
             return View("NotFound");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> EditUsersInRole(string roleId)
+        {
+            ViewBag.roleId = roleId;
+            var role = await roleManager.FindByIdAsync(roleId);
+
+            if(role != null)
+            {
+                var model = new List<UserRoleVM>();
+
+                foreach(var user in userManager.Users)
+                {
+
+                    var userRoleVm = new UserRoleVM
+                    {
+                        UserId = user.Id,
+                        UserName = user.UserName
+                    };
+
+                    if (await userManager.IsInRoleAsync(user, role.Name))
+                    {
+                        userRoleVm.IsSelected = true;
+                    }
+                    else
+                    {
+                        userRoleVm.IsSelected = false;
+                    }
+
+                    model.Add(userRoleVm);
+
+                }
+                return View(model);
+
+            }
+
+            ViewBag.ErrorMessage = $"Role with Id:{roleId} cannot be found";
+            return View("NotFound");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditUsersInRole(List<UserRoleVM> model, string roleId)
+        {
+            var role = await roleManager.FindByIdAsync(roleId);
+
+            if (role != null)
+            {
+                foreach(var item in model)
+                {
+                    var user = await userManager.FindByIdAsync(item.UserId);
+
+                    if (item.IsSelected && !(await userManager.IsInRoleAsync(user,role.Name)))
+                    {
+                        await userManager.AddToRoleAsync(user, role.Name);
+                    }
+                    else
+                    {
+                        await userManager.RemoveFromRoleAsync(user, role.Name);
+                    }
+                }
+
+                return RedirectToAction("EditRole", new { id = role.Id });
+            }
+
+            ViewBag.ErrorMessage = $"Role with Id:{roleId} cannot be found";
+            return View("NotFound");
+        }
     }
 }
