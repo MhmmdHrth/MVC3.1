@@ -1,4 +1,5 @@
 ﻿using EmployeeManagement.Models;
+using EmployeeManagement.Utilities;
 using EmployeeManagement.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -44,6 +45,11 @@ namespace EmployeeManagement.Controllers
 
                 if (result.Succeeded)
                 {
+                    if(signInManager.IsSignedIn(User) && User.IsInRole(Utility.Role_Admin))
+                    {
+                        return RedirectToAction("ListUsers", "Administration");
+                    }
+
                     await signInManager.SignInAsync(user, false);
                     return RedirectToAction("Index", "Home");
                 }

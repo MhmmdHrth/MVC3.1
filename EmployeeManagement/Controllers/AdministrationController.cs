@@ -179,5 +179,12 @@ namespace EmployeeManagement.Controllers
             ViewBag.ErrorMessage = $"Role with Id:{roleId} cannot be found";
             return View("NotFound");
         }
+
+        [HttpGet]
+        public IActionResult ListUsers()
+        {
+            var users = userManager.Users;
+            return View(users);
+        }
     }
 }
