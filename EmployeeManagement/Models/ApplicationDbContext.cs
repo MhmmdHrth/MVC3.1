@@ -19,6 +19,13 @@ namespace EmployeeManagement.Models
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Seed();
+
+            //enforce on delete from cascade to no action
+            foreach(var foreignkey in modelBuilder.Model.GetEntityTypes()
+                                    .SelectMany(x => x.GetForeignKeys()))
+            {
+                foreignkey.DeleteBehavior = DeleteBehavior.Restrict;
+            }
         }
     }
 }
