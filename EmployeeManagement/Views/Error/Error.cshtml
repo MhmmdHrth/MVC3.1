@@ -1,28 +1,37 @@
 ﻿
 <div class="container">
-    <div class="text-center">
-        <h3>
-            An occured while processing your request.
-            The support team is notified and we are working on the fix
-        </h3>
-        <h4>Please contact us on dev@cloud-connect.com</h4>
-    </div>
-    <hr />
-    <h3>Exception Details:</h3>
-    <div class="alert alert-danger">
-        <h5>Exception Path</h5>
+    @if (ViewBag.ErrorTitle == null)
+    {
+        <div class="text-center">
+            <h3>
+                An error occured while processing your request.
+                The support team is notified and we are working on the fix
+            </h3>
+            <h4>Please contact us on dev@cloud-connect.com</h4>
+        </div>
         <hr />
-        <p>@ViewBag.ExceptionPath</p>
-    </div>
-    <div class="alert alert-danger">
-        <h5>Exception Message</h5>
-        <hr />
-        <p>@ViewBag.ExceptionMessage</p>
-    </div>
-    <div class="alert alert-danger">
-        <h5>Exception Stack Trace</h5>
-        <hr />
-        <p>@ViewBag.StackTrace</p>
-    </div>
+        <h3>Exception Details:</h3>
+        <div class="alert alert-danger">
+            <h5>Exception Path</h5>
+            <hr />
+            <p>@ViewBag.ExceptionPath</p>
+        </div>
+        <div class="alert alert-danger">
+            <h5>Exception Message</h5>
+            <hr />
+            <p>@ViewBag.ExceptionMessage</p>
+        </div>
+        <div class="alert alert-danger">
+            <h5>Exception Stack Trace</h5>
+            <hr />
+            <p>@ViewBag.StackTrace</p>
+        </div>
+    }
+    else
+    {
+        <h1 class="text-center text-danger">@ViewBag.ErrorTitle</h1>
+        <h6 class="text-center text-danger">@ViewBag.ErrorMessage</h6>
+    }
+
 </div>
 
