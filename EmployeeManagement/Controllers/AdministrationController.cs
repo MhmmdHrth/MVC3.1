@@ -454,6 +454,13 @@ namespace EmployeeManagement.Controllers
             ViewBag.ErrorMessage = $"User with Id = {userId} cannot be found";
             return View("NotFound");
         }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
     }
 }
  
