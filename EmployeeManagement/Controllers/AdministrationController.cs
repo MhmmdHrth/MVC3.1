@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace EmployeeManagement.Controllers
@@ -168,7 +169,7 @@ namespace EmployeeManagement.Controllers
                 {
                     var user = await userManager.FindByIdAsync(item.UserId);
 
-                    if (item.IsSelected && !(await userManager.IsInRoleAsync(user,role.Name)))
+                    if (item.IsSelected)
                     {
                         await userManager.AddToRoleAsync(user, role.Name);
                     }
@@ -376,6 +377,74 @@ namespace EmployeeManagement.Controllers
                 }
 
                 return RedirectToAction("EditUser", new { id = userId });
+            }
+
+            ViewBag.ErrorMessage = $"User with Id = {userId} cannot be found";
+            return View("NotFound");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ManageUserClaims(string userId)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+
+            if(user != null)
+            {
+                var existingUserClaims = await userManager.GetClaimsAsync(user);
+
+                var model = new UserClaimsVM
+                {
+                    UserId = userId
+                };
+
+                foreach(Claim claim in ClaimsStore.AllClaims)
+                {
+                    UserClaim userClaim = new UserClaim
+                    {
+                        ClaimType = claim.Type
+                    };
+
+                    if(existingUserClaims.Any(x => x.Type == claim.Type))
+                    {
+                        userClaim.IsSelected = true;
+                    }
+
+                    model.Claims.Add(userClaim);
+                }
+
+                return View(model);
+            }
+
+            ViewBag.ErrorMessage = $"User with Id = {userId} cannot be found";
+            return View("NotFound");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ManageUserClaims(UserClaimsVM model, string userId)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+
+            if(user != null)
+            {
+                var claims = await userManager.GetClaimsAsync(user);
+                var result = await userManager.RemoveClaimsAsync(user, claims);
+
+                if (!result.Succeeded)
+                {
+                    ModelState.AddModelError("", "Cannot remove user existing claims");
+                    return View(model);
+                }
+
+                result = await userManager.AddClaimsAsync
+                    (user, model.Claims.Where(x => x.IsSelected).Select(x => new Claim(x.ClaimType, x.ClaimType)));
+
+                if (!result.Succeeded)
+                {
+                    ModelState.AddModelError("", "Cannot add user existing claims");
+                    return View(model);
+                }
+
+                return RedirectToAction("EditUser", new { Id = model.UserId });
             }
 
             ViewBag.ErrorMessage = $"User with Id = {userId} cannot be found";
