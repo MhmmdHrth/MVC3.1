@@ -31,6 +31,7 @@ namespace EmployeeManagement.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = "DeleteRolePolicy")]
         public IActionResult CreateRole()
         {
             return View();
@@ -276,6 +277,7 @@ namespace EmployeeManagement.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = "DeleteRolePolicy")]
         public async Task<IActionResult> DeleteRole(string id)
         {
             var role = await roleManager.FindByIdAsync(id);
@@ -452,3 +454,4 @@ namespace EmployeeManagement.Controllers
         }
     }
 }
+ 

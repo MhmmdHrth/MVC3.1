@@ -52,6 +52,12 @@ namespace EmployeeManagement
 
             }).AddRazorRuntimeCompilation();
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("DeleteRolePolicy", policy => policy.RequireClaim("Delete Role"));
+                options.AddPolicy("DeleteRolePolicy", policy => policy.RequireClaim("Create Role"));
+            });
+
             services.AddScoped<IEmployeeRepository, SQLEmployeeRepository>();
         }
 
