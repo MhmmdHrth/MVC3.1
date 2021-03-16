@@ -20,7 +20,7 @@ namespace EmployeeManagement.Security
                 string adminIdBeingEdited = authFilterContext.HttpContext.Request.Query["userId"];
 
                 if (context.User.IsInRole("Admin") && context.User.HasClaim(claim => claim.Type == "Edit Role" && claim.Value == "true")
-                    && adminIdBeingEdited.ToLower() != loggedAdminId.ToLower())
+                    && (adminIdBeingEdited.ToLower() != loggedAdminId.ToLower()))
                 {
                     context.Succeed(requirement);
                 }
