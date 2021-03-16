@@ -70,11 +70,13 @@ namespace EmployeeManagement
 
                 options.AddPolicy("EditRolePolicy", policy => policy.AddRequirements(new ManageAdminRolesAndClaimsRequirement()));
 
-                options.AddPolicy("RolePolicy", policy => policy.RequireRole("Admin", "Employee"));
+                options.AddPolicy("RolePolicy", policy => policy.RequireRole("Super Admin","Admin", "Employee"));
             });
 
             services.AddScoped<IEmployeeRepository, SQLEmployeeRepository>();
+
             services.AddSingleton<IAuthorizationHandler, CanEditOnlyOtherAdminRolesAndClaimsHandler>();
+            services.AddSingleton<IAuthorizationHandler, SuperAdminHandler>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

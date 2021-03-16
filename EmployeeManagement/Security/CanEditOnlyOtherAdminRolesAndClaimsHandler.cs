@@ -17,10 +17,10 @@ namespace EmployeeManagement.Security
             if(authFilterContext != null)
             {
                 string loggedAdminId = context.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.NameIdentifier).Value;
-                string adminIdBeingedited = authFilterContext.HttpContext.Request.Query["userId"];
+                string adminIdBeingEdited = authFilterContext.HttpContext.Request.Query["userId"];
 
                 if (context.User.IsInRole("Admin") && context.User.HasClaim(claim => claim.Type == "Edit Role" && claim.Value == "true")
-                    && adminIdBeingedited.ToLower() != loggedAdminId.ToLower())
+                    && adminIdBeingEdited.ToLower() != loggedAdminId.ToLower())
                 {
                     context.Succeed(requirement);
                 }
@@ -28,7 +28,7 @@ namespace EmployeeManagement.Security
                 return Task.CompletedTask;
             }
 
-            return Task.CompletedTask;
+            return Task.CompletedTask; 
         }
     }
 }
