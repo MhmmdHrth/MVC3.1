@@ -71,6 +71,10 @@ namespace EmployeeManagement
                 options.AddPolicy("EditRolePolicy", policy => policy.AddRequirements(new ManageAdminRolesAndClaimsRequirement()));
 
                 options.AddPolicy("RolePolicy", policy => policy.RequireRole("Super Admin","Admin", "Employee"));
+
+                //if do not want the rest of the handlers to be called
+                //when a failure is returned
+                //options.InvokeHandlersAfterFailure = false;
             });
 
             services.AddScoped<IEmployeeRepository, SQLEmployeeRepository>();
