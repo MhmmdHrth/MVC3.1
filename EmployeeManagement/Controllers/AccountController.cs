@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace EmployeeManagement.Controllers
@@ -72,9 +73,15 @@ namespace EmployeeManagement.Controllers
 
 
         [HttpGet]
-        public IActionResult Login()
+        public async Task<IActionResult> Login(string returnUrl)
         {
-            return View();
+            LoginVM model = new LoginVM
+            {
+                ReturnUrl = returnUrl,
+                ExernalLogins = (await signInManager.GetExternalAuthenticationSchemesAsync()).ToList()
+            };
+
+            return View(model);
         }
 
         [HttpPost]
@@ -107,6 +114,84 @@ namespace EmployeeManagement.Controllers
         {
             await signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
+        }
+
+        //External login method
+        [HttpPost]
+        [AllowAnonymous]
+        public IActionResult ExternalLogin(string provider, string returnUrl)
+        {
+            var redirectUrl = Url.Action("ExternalLoginCallBack", "Account", new { ReturnUrl = returnUrl });
+            var properties = signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+
+            return new ChallengeResult(provider, properties);
+        }
+
+        //tak boleh ada rest method, nanti return error
+        [AllowAnonymous]
+        public async Task<IActionResult> ExternalLoginCallBack(string returnUrl = null, string remoteError = null)
+        {
+            returnUrl = returnUrl ?? Url.Content("~/");
+
+            LoginVM model = new LoginVM
+            {
+                ReturnUrl = returnUrl,
+                ExernalLogins = (await signInManager.GetExternalAuthenticationSchemesAsync()).ToList()
+            };
+
+            var userInfoData = await signInManager.GetExternalLoginInfoAsync();
+
+            if (remoteError != null)
+            {
+                ModelState.AddModelError("", $"Error from external provider:{remoteError}");
+                return View("Login", model);
+            }
+
+            if (userInfoData == null)
+            {
+                ModelState.AddModelError("", $"Error loading external login informationo");
+                return View("Login", model);
+            }
+
+            var signInResult = await signInManager.ExternalLoginSignInAsync
+                (userInfoData.LoginProvider, userInfoData.ProviderKey, isPersistent: false, bypassTwoFactor: true);
+
+            if (signInResult.Succeeded)
+            {
+                return LocalRedirect(returnUrl);
+            }
+            else
+            {
+                //kalau masuk sini maksudnya user takda dalam database
+                var email = userInfoData.Principal.FindFirstValue(ClaimTypes.Email);
+
+                if (email != null)
+                {
+                    var user = await userManager.FindByEmailAsync(email);
+
+                    if (user == null)
+                    {
+                        user = new ApplicationUser
+                        {
+                            UserName = userInfoData.Principal.FindFirstValue(ClaimTypes.Email),
+                            Email = userInfoData.Principal.FindFirstValue(ClaimTypes.Email)
+                        };
+
+                        await userManager.CreateAsync(user);
+                    }
+
+                    await userManager.AddLoginAsync(user, userInfoData);
+                    await signInManager.SignInAsync(user, isPersistent: false);
+
+                    return LocalRedirect(returnUrl);
+                }
+
+                ViewBag.ErrorTitle = $"Email claim not received from: {userInfoData.LoginProvider}";
+                ViewBag.ErrorMessage = "Please contact support on harith.jamdil@cloud-connect.asia";
+
+                return View("~/Views/Error/Error.cshtml");
+            }
+
         }
     }
 }

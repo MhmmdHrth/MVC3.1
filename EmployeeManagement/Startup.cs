@@ -40,8 +40,6 @@ namespace EmployeeManagement
                 options.Password.RequiredUniqueChars = 2;
             }).AddEntityFrameworkStores<ApplicationDbContext>();
 
-            
-
             services.AddMvc(config => {
                 config.EnableEndpointRouting = false;
 
@@ -52,6 +50,13 @@ namespace EmployeeManagement
                 config.Filters.Add(new AuthorizeFilter(policy));
 
             }).AddRazorRuntimeCompilation();
+
+            services.AddAuthentication()
+                    .AddGoogle(options =>
+                    {
+                        options.ClientId = "942482808548-1rduin0mb6ng9io55at1mvfhd0sckqhr.apps.googleusercontent.com";
+                        options.ClientSecret = "OgJNh4ZuxW2fb2N8Gr0x8low";
+                    });
 
             services.ConfigureApplicationCookie(options =>
             {
@@ -79,6 +84,7 @@ namespace EmployeeManagement
 
             services.AddScoped<IEmployeeRepository, SQLEmployeeRepository>();
 
+            //requirement implementation
             services.AddSingleton<IAuthorizationHandler, CanEditOnlyOtherAdminRolesAndClaimsHandler>();
             services.AddSingleton<IAuthorizationHandler, SuperAdminHandler>();
         }
