@@ -87,6 +87,8 @@ namespace EmployeeManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginVM model, string ReturnUrl)
         {
+            model.ExernalLogins = (await signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+
             if (ModelState.IsValid)
             {
                 var result = await signInManager.PasswordSignInAsync
@@ -94,6 +96,15 @@ namespace EmployeeManagement.Controllers
 
                 if (result.Succeeded)
                 {
+                    var user = await userManager.FindByEmailAsync(model.Email);
+
+                    if(user != null && !user.EmailConfirmed &&
+                        (await userManager.CheckPasswordAsync(user,model.Password)))
+                    {
+                        ModelState.AddModelError("", "Email not confirmed yet");
+                        return View(model);
+                    }
+
                     if (!String.IsNullOrEmpty(ReturnUrl) && Url.IsLocalUrl(ReturnUrl))
                     {
                         return Redirect(ReturnUrl);
@@ -105,7 +116,7 @@ namespace EmployeeManagement.Controllers
                 ModelState.AddModelError(String.Empty, "Invalid Login Attempt");
             }
 
-            return View();
+            return View(model);
         }
 
         [HttpPost]
@@ -130,7 +141,7 @@ namespace EmployeeManagement.Controllers
         //tak boleh ada rest method, nanti return error
         [AllowAnonymous]
         public async Task<IActionResult> ExternalLoginCallBack(string returnUrl = null, string remoteError = null)
-        {
+         {
             returnUrl = returnUrl ?? Url.Content("~/");
 
             LoginVM model = new LoginVM
@@ -153,6 +164,20 @@ namespace EmployeeManagement.Controllers
                 return View("Login", model);
             }
 
+            var email = userInfoData.Principal.FindFirstValue(ClaimTypes.Email);
+            ApplicationUser user = null;
+
+            if(email != null)
+            {
+                user = await userManager.FindByEmailAsync(email);
+                
+                if(user != null && !user.EmailConfirmed)
+                {
+                    ModelState.AddModelError("", "Email not confirmed yet");
+                    return View("Login", model);
+                }
+            }
+
             var signInResult = await signInManager.ExternalLoginSignInAsync
                 (userInfoData.LoginProvider, userInfoData.ProviderKey, isPersistent: false, bypassTwoFactor: true);
 
@@ -163,12 +188,8 @@ namespace EmployeeManagement.Controllers
             else
             {
                 //kalau masuk sini maksudnya user takda dalam database
-                var email = userInfoData.Principal.FindFirstValue(ClaimTypes.Email);
-
                 if (email != null)
                 {
-                    var user = await userManager.FindByEmailAsync(email);
-
                     if (user == null)
                     {
                         user = new ApplicationUser

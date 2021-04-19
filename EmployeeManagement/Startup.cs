@@ -34,10 +34,14 @@ namespace EmployeeManagement
             services.AddDbContextPool<ApplicationDbContext>
                 (options => options.UseSqlServer(Configuration.GetConnectionString("EmployeeDB")));
 
+
+            //identity
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
                 options.Password.RequiredLength = 8;
                 options.Password.RequiredUniqueChars = 2;
+                options.SignIn.RequireConfirmedEmail = true;
+
             }).AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddMvc(config => {
