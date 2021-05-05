@@ -42,7 +42,9 @@ namespace EmployeeManagement
                 options.Password.RequiredUniqueChars = 2;
                 options.SignIn.RequireConfirmedEmail = true;
 
-            }).AddEntityFrameworkStores<ApplicationDbContext>();
+            })
+            .AddDefaultTokenProviders()
+            .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddMvc(config => {
                 config.EnableEndpointRouting = false;

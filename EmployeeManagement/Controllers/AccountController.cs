@@ -4,11 +4,14 @@ using EmployeeManagement.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace EmployeeManagement.Controllers
 {
@@ -17,12 +20,15 @@ namespace EmployeeManagement.Controllers
     {
         private readonly UserManager<ApplicationUser> userManager;
         private readonly SignInManager<ApplicationUser> signInManager;
+        private readonly ILogger<AccountController> logger;
 
         public AccountController(UserManager<ApplicationUser> userManager,
-                                 SignInManager<ApplicationUser> signInManager)
+                                 SignInManager<ApplicationUser> signInManager,
+                                 ILogger<AccountController> logger)
         {
             this.userManager = userManager;
             this.signInManager = signInManager;
+            this.logger = logger;
         }
 
         [HttpGet]
@@ -46,13 +52,20 @@ namespace EmployeeManagement.Controllers
 
                 if (result.Succeeded)
                 {
-                    if(signInManager.IsSignedIn(User) && User.IsInRole(Utility.Role_Admin))
+                    var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+                    var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token = token }, Request.Scheme);
+
+                    logger.Log(LogLevel.Warning, confirmationLink);
+
+                    if (signInManager.IsSignedIn(User) && User.IsInRole(Utility.Role_Admin))
                     {
                         return RedirectToAction("ListUsers", "Administration");
                     }
 
-                    await signInManager.SignInAsync(user, false);
-                    return RedirectToAction("Index", "Home");
+                    ViewBag.ErrorTitle = $"Registration Successful";
+                    ViewBag.ErrorMessage = "Before you can login, please confirm your email by clicking on the confirmation link we have emailed you";
+
+                    return View("~/Views/Error/Error.cshtml");
                 }
 
                 foreach(var error in result.Errors)
@@ -199,6 +212,16 @@ namespace EmployeeManagement.Controllers
                         };
 
                         await userManager.CreateAsync(user);
+
+                        var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+                        var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token = token }, Request.Scheme);
+
+                        logger.Log(LogLevel.Warning, confirmationLink);
+
+                        ViewBag.ErrorTitle = $"Registration Successful";
+                        ViewBag.ErrorMessage = "Before you can login, please confirm your email by clicking on the confirmation link we have emailed you";
+
+                        return View("~/Views/Error/Error.cshtml");
                     }
 
                     await userManager.AddLoginAsync(user, userInfoData);
@@ -212,7 +235,33 @@ namespace EmployeeManagement.Controllers
 
                 return View("~/Views/Error/Error.cshtml");
             }
+        }
 
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            if(userId != null && token != null)
+            {
+                var user = await userManager.FindByIdAsync(userId);
+
+                if(user != null)
+                {
+                    var result = await userManager.ConfirmEmailAsync(user, token);
+
+                    if (result.Succeeded)
+                    {
+                        return View();
+                    }
+
+                    ViewBag.ErrorTitle = $"Email cannot be confirmed";
+                    ViewBag.ErrorMessage = "Please contact support on harith.jamdil@cloud-connect.asia";
+
+                    return View("~/Views/Error/Error.cshtml");
+                }
+            }
+
+            return RedirectToAction("Index", "Home");
         }
     }
 }
