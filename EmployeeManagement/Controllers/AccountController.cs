@@ -114,6 +114,14 @@ namespace EmployeeManagement.Controllers
                     if(user != null && !user.EmailConfirmed &&
                         (await userManager.CheckPasswordAsync(user,model.Password)))
                     {
+                        var token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+                        var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token = token }, Request.Scheme);
+
+                        logger.Log(LogLevel.Warning, confirmationLink);
+
+                        ViewBag.ErrorTitle = $"Registration Successful";
+                        ViewBag.ErrorMessage = "Before you can login, please confirm your email by clicking on the confirmation link we have emailed you";
+
                         ModelState.AddModelError("", "Email not confirmed yet");
                         return View(model);
                     }
@@ -322,6 +330,43 @@ namespace EmployeeManagement.Controllers
             }
 
             return View(model);
+        }
+
+        [HttpGet]
+        [Authorize]
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordVM model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await userManager.GetUserAsync(User);
+
+                if(user != null)
+                {
+                    var result = await userManager.ChangePasswordAsync(user, model.CurrentPassword, model.NewPassword);
+
+                    if (!result.Succeeded)
+                    {
+                        foreach(var error in result.Errors)
+                        {
+                            ModelState.AddModelError("", error.Description);
+                        }
+
+                        return View(model);
+                    }
+
+                    await signInManager.RefreshSignInAsync(user);
+                    return View("ChangePasswordConfirmation");
+                }
+
+            }
+
+            return RedirectToAction("Login");
         }
     }
 }
