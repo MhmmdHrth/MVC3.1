@@ -46,6 +46,12 @@ namespace EmployeeManagement
             .AddDefaultTokenProviders()
             .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            //token lifetime
+            services.Configure<DataProtectionTokenProviderOptions>(options =>
+            {
+                options.TokenLifespan = TimeSpan.FromHours(5);
+            });
+
             services.AddMvc(config => {
                 config.EnableEndpointRouting = false;
 

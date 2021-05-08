@@ -289,11 +289,11 @@ namespace EmployeeManagement.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ResetPassword(string token, string email)
+        public IActionResult ResetPassword(string token, string email)
         {
-            if(token == null && email == null)
+            if(token == null || email == null)
             {
-                ModelState.AddModelError("", "Invalid password reset token");
+                ModelState.AddModelError("", "Invalid Token");
             }
 
             return View();
