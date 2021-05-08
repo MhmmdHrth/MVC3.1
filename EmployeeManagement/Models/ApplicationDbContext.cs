@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace EmployeeManagement.Models
 {
@@ -21,7 +18,7 @@ namespace EmployeeManagement.Models
             modelBuilder.Seed();
 
             //enforce on delete from cascade to no action
-            foreach(var foreignkey in modelBuilder.Model.GetEntityTypes()
+            foreach (var foreignkey in modelBuilder.Model.GetEntityTypes()
                                     .SelectMany(x => x.GetForeignKeys()))
             {
                 foreignkey.DeleteBehavior = DeleteBehavior.Restrict;

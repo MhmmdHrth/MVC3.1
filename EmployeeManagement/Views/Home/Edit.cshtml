@@ -1,6 +1,6 @@
 ﻿@model EmployeeEditVM
 
-@{ 
+@{
     var photo = String.Format($"~/Images/{Model.ExistingPhotoPath ?? "tahfiz.jpg"}");
 }
 
@@ -14,7 +14,6 @@
             <input asp-for="Name" class="form-control" />
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
-
     </div>
     <div class="form-group row">
         <label asp-for="Email" class="col-3"></label>
@@ -56,7 +55,7 @@
         </div>
     </div>
     <div class="text-center">
-        <img asp-append-version="true" src="@photo" class="imageThumbnail"/>
+        <img asp-append-version="true" src="@photo" class="imageThumbnail" />
     </div>
 
     @section Scripts{

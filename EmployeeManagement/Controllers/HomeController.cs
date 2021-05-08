@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using EmployeeManagement.Models;
+﻿using EmployeeManagement.Models;
 using EmployeeManagement.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
+using System.IO;
+using System.Linq;
 
 namespace EmployeeManagement.Controllers
 {
@@ -62,9 +60,8 @@ namespace EmployeeManagement.Controllers
             Employee employee = _employeeRepository.GetEmployee(employeeID);
             employee.Email = protector.Protect(employee.Email);
 
-            if(employee != null)
+            if (employee != null)
             {
-
                 HomeDetailsVM homeDetailsVM = new HomeDetailsVM
                 {
                     Employee = employee,
@@ -132,9 +129,9 @@ namespace EmployeeManagement.Controllers
                 objFromDb.Email = model.Email;
                 objFromDb.Name = model.Name;
 
-                if(model.Photos != null)
+                if (model.Photos != null)
                 {
-                    if(model.ExistingPhotoPath != null)
+                    if (model.ExistingPhotoPath != null)
                     {
                         string filePath = Path.Combine
                             (String.Format($"{hostingEnvironment.WebRootPath}/Images/{model.ExistingPhotoPath}"));
@@ -160,7 +157,7 @@ namespace EmployeeManagement.Controllers
                 {
                     uniqueFileName = String.Format($"{Guid.NewGuid().ToString()}_{photo.FileName}");
                     var filePath = Path.Combine(hostingEnvironment.WebRootPath, "Images", uniqueFileName);
-                    using(var filestream = new FileStream(filePath, FileMode.Create))
+                    using (var filestream = new FileStream(filePath, FileMode.Create))
                     {
                         photo.CopyTo(filestream);
                     }

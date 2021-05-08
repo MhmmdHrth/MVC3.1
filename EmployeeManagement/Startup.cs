@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using EmployeeManagement.Models;
 using EmployeeManagement.Security;
 using Microsoft.AspNetCore.Authorization;
@@ -15,8 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-
+using System;
 
 namespace EmployeeManagement
 {
@@ -47,7 +41,6 @@ namespace EmployeeManagement
 
                 options.Lockout.MaxFailedAccessAttempts = 5;
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
-
             })
             .AddDefaultTokenProviders()
             .AddTokenProvider<CustomEmailConfirmationTokenProvider<ApplicationUser>>("EmailConfirmation")
@@ -65,8 +58,8 @@ namespace EmployeeManagement
                 options.TokenLifespan = TimeSpan.FromDays(3);
             });
 
-
-            services.AddMvc(config => {
+            services.AddMvc(config =>
+            {
                 config.EnableEndpointRouting = false;
 
                 var policy = new AuthorizationPolicyBuilder()
@@ -74,7 +67,6 @@ namespace EmployeeManagement
                                 .Build();
 
                 config.Filters.Add(new AuthorizeFilter(policy));
-
             }).AddRazorRuntimeCompilation();
 
             //authentication
@@ -107,7 +99,7 @@ namespace EmployeeManagement
 
                 options.AddPolicy("EditRolePolicy", policy => policy.AddRequirements(new ManageAdminRolesAndClaimsRequirement()));
 
-                options.AddPolicy("RolePolicy", policy => policy.RequireRole("Super Admin","Admin", "Employee"));
+                options.AddPolicy("RolePolicy", policy => policy.RequireRole("Super Admin", "Admin", "Employee"));
 
                 //if do not want the rest of the handlers to be called
                 //when a failure is returned

@@ -1,6 +1,6 @@
 ﻿@model LoginVM
 
-@{ 
+@{
     ViewBag.Title = "User Login";
 }
 
@@ -23,7 +23,7 @@
             <div class="form-group">
                 <div class="checkbox">
                     <label asp-for="RememberMe">
-                        <input asp-for="RememberMe" type="checkbox"/> @Html.DisplayNameFor(x => x.RememberMe)
+                        <input asp-for="RememberMe" type="checkbox" /> @Html.DisplayNameFor(x => x.RememberMe)
                     </label>
                 </div>
             </div>
@@ -42,9 +42,9 @@
                     @*name and value in button are required to bind it in ExternalLogin controller*@
                     @foreach(var provider in Model.ExernalLogins)
                     {
-                        <button type="submit" class="btn btn-primary" 
-                                name="provider" 
-                                value="@provider.Name" 
+                        <button type="submit" class="btn btn-primary"
+                                name="provider"
+                                value="@provider.Name"
                                 title="Login using your @provider.DisplayName account">
                             @provider.DisplayName
                         </button>

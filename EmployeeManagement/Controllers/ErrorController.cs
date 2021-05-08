@@ -1,10 +1,6 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace EmployeeManagement.Controllers
 {
@@ -32,8 +28,6 @@ namespace EmployeeManagement.Controllers
                     logger.LogWarning($"404 Error Occured. Path = {statusCodeResult.OriginalPath}." +
                         $" Query String = {statusCodeResult.OriginalQueryString}");
                     break;
-
-
             }
             return View();
         }

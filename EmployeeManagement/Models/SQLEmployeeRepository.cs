@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace EmployeeManagement.Models
 {
@@ -20,7 +18,7 @@ namespace EmployeeManagement.Models
 
         public Employee Add(Employee employee)
         {
-            if(employee != null)
+            if (employee != null)
             {
                 dbcontext.Employees.Add(employee);
                 dbcontext.SaveChanges();
@@ -32,7 +30,7 @@ namespace EmployeeManagement.Models
         public Employee Delete(int id)
         {
             var obj = dbcontext.Employees.Find(id);
-            if(obj != null)
+            if (obj != null)
             {
                 dbcontext.Employees.Remove(obj);
                 dbcontext.SaveChanges();

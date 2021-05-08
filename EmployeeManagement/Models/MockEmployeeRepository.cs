@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace EmployeeManagement.Models
 {
@@ -30,7 +28,7 @@ namespace EmployeeManagement.Models
         {
             var employee = employees.FirstOrDefault(x => x.Id == id);
 
-            if(employee != null)
+            if (employee != null)
             {
                 employees.Remove(employee);
             }
@@ -52,7 +50,7 @@ namespace EmployeeManagement.Models
         {
             var obj = employees.FirstOrDefault(x => x.Id == employee.Id);
 
-            if(obj != null)
+            if (obj != null)
             {
                 obj.Name = employee.Name;
                 obj.Department = employee.Department;

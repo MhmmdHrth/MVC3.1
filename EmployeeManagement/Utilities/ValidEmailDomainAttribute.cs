@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace EmployeeManagement.Utilities
 {
@@ -17,8 +13,8 @@ namespace EmployeeManagement.Utilities
 
         public override bool IsValid(object value)
         {
-            string emailDomain =  value.ToString().Split("@")[1];
-            return emailDomain.ToLower() == email.ToLower(); 
+            string emailDomain = value.ToString().Split("@")[1];
+            return emailDomain.ToLower() == email.ToLower();
         }
     }
 }

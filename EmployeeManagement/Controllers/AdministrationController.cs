@@ -1,10 +1,8 @@
 ﻿using EmployeeManagement.Models;
-using EmployeeManagement.Utilities;
 using EmployeeManagement.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -53,7 +51,7 @@ namespace EmployeeManagement.Controllers
                     return RedirectToAction("ListRoles", "Administration");
                 }
 
-                foreach(var error in result.Errors)
+                foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError("", error.Description);
                 }
@@ -66,15 +64,15 @@ namespace EmployeeManagement.Controllers
         public IActionResult ListRoles()
         {
             return View(roleManager.Roles);
-        } 
+        }
 
         [HttpGet]
         //[Authorize(Policy = "EditRolePolicy")]
         public async Task<IActionResult> EditRole(string id)
         {
-           var role = await roleManager.FindByIdAsync(id);
+            var role = await roleManager.FindByIdAsync(id);
 
-           if(role != null)
+            if (role != null)
             {
                 var model = new EditRoleVM
                 {
@@ -82,7 +80,7 @@ namespace EmployeeManagement.Controllers
                     RoleName = role.Name
                 };
 
-               foreach(var user in await userManager.GetUsersInRoleAsync(role.Name))
+                foreach (var user in await userManager.GetUsersInRoleAsync(role.Name))
                 {
                     model.Users.Add(user.UserName);
                 }
@@ -110,7 +108,7 @@ namespace EmployeeManagement.Controllers
                     return RedirectToAction("ListRoles");
                 }
 
-                foreach(var error in result.Errors)
+                foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError("", error.Description);
                 }
@@ -128,13 +126,12 @@ namespace EmployeeManagement.Controllers
             ViewBag.roleId = roleId;
             var role = await roleManager.FindByIdAsync(roleId);
 
-            if(role != null)
+            if (role != null)
             {
                 var model = new List<UserRoleVM>();
 
-                foreach(var user in userManager.Users)
+                foreach (var user in userManager.Users)
                 {
-
                     var userRoleVm = new UserRoleVM
                     {
                         UserId = user.Id,
@@ -151,10 +148,8 @@ namespace EmployeeManagement.Controllers
                     }
 
                     model.Add(userRoleVm);
-
                 }
                 return View(model);
-
             }
 
             ViewBag.ErrorMessage = $"Role with Id:{roleId} cannot be found";
@@ -168,7 +163,7 @@ namespace EmployeeManagement.Controllers
 
             if (role != null)
             {
-                foreach(var item in model)
+                foreach (var item in model)
                 {
                     var user = await userManager.FindByIdAsync(item.UserId);
 
@@ -203,7 +198,7 @@ namespace EmployeeManagement.Controllers
             var userClaims = await userManager.GetClaimsAsync(user);
             var userRoles = await userManager.GetRolesAsync(user);
 
-            if(user != null)
+            if (user != null)
             {
                 var model = new EditUserVM
                 {
@@ -227,7 +222,7 @@ namespace EmployeeManagement.Controllers
         {
             var user = await userManager.FindByIdAsync(model.Id);
 
-            if(user != null)
+            if (user != null)
             {
                 user.Email = model.Email;
                 user.UserName = model.UserName;
@@ -240,7 +235,7 @@ namespace EmployeeManagement.Controllers
                     return RedirectToAction("ListUsers");
                 }
 
-                foreach(var error in result.Errors)
+                foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError("", error.Description);
                 }
@@ -257,7 +252,7 @@ namespace EmployeeManagement.Controllers
         {
             var user = await userManager.FindByIdAsync(id);
 
-            if(user != null)
+            if (user != null)
             {
                 var result = await userManager.DeleteAsync(user);
 
@@ -266,7 +261,7 @@ namespace EmployeeManagement.Controllers
                     return RedirectToAction(nameof(ListUsers));
                 }
 
-                foreach(var error in result.Errors)
+                foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError("", error.Description);
                 }
@@ -302,7 +297,7 @@ namespace EmployeeManagement.Controllers
 
                     return View(nameof(ListRoles));
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     logger.LogError($"Error deleting role {ex}");
 
@@ -326,11 +321,11 @@ namespace EmployeeManagement.Controllers
             ViewBag.UserId = userId;
             var user = await userManager.FindByIdAsync(userId);
 
-            if(user != null)
+            if (user != null)
             {
                 var model = new List<UserRolesVM>();
 
-                foreach(var role in roleManager.Roles)
+                foreach (var role in roleManager.Roles)
                 {
                     var userRoles = new UserRolesVM
                     {
@@ -338,7 +333,7 @@ namespace EmployeeManagement.Controllers
                         RoleName = role.Name
                     };
 
-                    if(await userManager.IsInRoleAsync(user, role.Name))
+                    if (await userManager.IsInRoleAsync(user, role.Name))
                     {
                         userRoles.IsSelected = true;
                     }
@@ -363,7 +358,7 @@ namespace EmployeeManagement.Controllers
         {
             var user = await userManager.FindByIdAsync(userId);
 
-            if(user != null)
+            if (user != null)
             {
                 var roles = await userManager.GetRolesAsync(user);
                 var result = await userManager.RemoveFromRolesAsync(user, roles);
@@ -394,7 +389,7 @@ namespace EmployeeManagement.Controllers
         {
             var user = await userManager.FindByIdAsync(userId);
 
-            if(user != null)
+            if (user != null)
             {
                 var existingUserClaims = await userManager.GetClaimsAsync(user);
 
@@ -403,14 +398,14 @@ namespace EmployeeManagement.Controllers
                     UserId = userId
                 };
 
-                foreach(Claim claim in ClaimsStore.AllClaims)
+                foreach (Claim claim in ClaimsStore.AllClaims)
                 {
                     UserClaim userClaim = new UserClaim
                     {
                         ClaimType = claim.Type
                     };
 
-                    if(existingUserClaims.Any(x => x.Type == claim.Type && x.Value == "true"))
+                    if (existingUserClaims.Any(x => x.Type == claim.Type && x.Value == "true"))
                     {
                         userClaim.IsSelected = true;
                     }
@@ -430,7 +425,7 @@ namespace EmployeeManagement.Controllers
         {
             var user = await userManager.FindByIdAsync(userId);
 
-            if(user != null)
+            if (user != null)
             {
                 var claims = await userManager.GetClaimsAsync(user);
                 var result = await userManager.RemoveClaimsAsync(user, claims);
@@ -442,7 +437,7 @@ namespace EmployeeManagement.Controllers
                 }
 
                 result = await userManager.AddClaimsAsync
-                    (user, model.Claims.Select(x => new Claim(x.ClaimType, x.IsSelected ? "true":"false")));
+                    (user, model.Claims.Select(x => new Claim(x.ClaimType, x.IsSelected ? "true" : "false")));
 
                 if (!result.Succeeded)
                 {
@@ -465,4 +460,3 @@ namespace EmployeeManagement.Controllers
         }
     }
 }
- 
