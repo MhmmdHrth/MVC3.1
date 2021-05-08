@@ -34,7 +34,6 @@ namespace EmployeeManagement
             services.AddDbContextPool<ApplicationDbContext>
                 (options => options.UseSqlServer(Configuration.GetConnectionString("EmployeeDB")));
 
-
             //identity
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
             {
@@ -42,15 +41,26 @@ namespace EmployeeManagement
                 options.Password.RequiredUniqueChars = 2;
                 options.SignIn.RequireConfirmedEmail = true;
 
+                //tell framework to use these email token provider
+                options.Tokens.EmailConfirmationTokenProvider = "EmailConfirmation";
+
             })
             .AddDefaultTokenProviders()
+            .AddTokenProvider<CustomEmailConfirmationTokenProvider<ApplicationUser>>("EmailConfirmation")
             .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            //token lifetime
+            //change token lifetime of all token types
             services.Configure<DataProtectionTokenProviderOptions>(options =>
             {
                 options.TokenLifespan = TimeSpan.FromHours(5);
             });
+
+            //change token lifetime of just the email confirmation token type
+            services.Configure<CustomEmailConfirmationTokenProviderOptions>(options =>
+            {
+                options.TokenLifespan = TimeSpan.FromDays(3);
+            });
+
 
             services.AddMvc(config => {
                 config.EnableEndpointRouting = false;
