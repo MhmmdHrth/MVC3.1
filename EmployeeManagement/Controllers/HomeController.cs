@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using EmployeeManagement.Models;
 using EmployeeManagement.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -18,25 +19,34 @@ namespace EmployeeManagement.Controllers
         private readonly IEmployeeRepository _employeeRepository;
         private readonly IWebHostEnvironment hostingEnvironment;
         private readonly ILogger<HomeController> logger;
+        private readonly IDataProtector protector;
 
         public HomeController(IEmployeeRepository employeeRepository,
                                 IWebHostEnvironment hostingEnvironment,
-                                ILogger<HomeController> logger)
+                                ILogger<HomeController> logger,
+                                IDataProtectionProvider dataProtectionProvider)
         {
             _employeeRepository = employeeRepository;
             this.hostingEnvironment = hostingEnvironment;
             this.logger = logger;
+
+            protector = dataProtectionProvider.CreateProtector("sensitiveData");
         }
 
         [AllowAnonymous]
         public ViewResult Index()
         {
-            var model = _employeeRepository.GetAllEmployee();
+            var model = _employeeRepository.GetAllEmployee()
+                                            .Select(x =>
+                                            {
+                                                x.EncryptedId = protector.Protect(x.Id.ToString());
+                                                return x;
+                                            });
             return View(model);
         }
 
         [AllowAnonymous]
-        public ViewResult Details(int? id)
+        public ViewResult Details(string id)
         {
             //throw new Exception("An error on the page");
 
@@ -47,7 +57,10 @@ namespace EmployeeManagement.Controllers
             logger.LogError("Error Log");
             logger.LogCritical("Critical Log");
 
-            Employee employee = _employeeRepository.GetEmployee(id.GetValueOrDefault(1));
+            int employeeID = Convert.ToInt32(protector.Unprotect(id));
+
+            Employee employee = _employeeRepository.GetEmployee(employeeID);
+            employee.Email = protector.Protect(employee.Email);
 
             if(employee != null)
             {
