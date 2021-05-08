@@ -39,10 +39,14 @@ namespace EmployeeManagement
             {
                 options.Password.RequiredLength = 8;
                 options.Password.RequiredUniqueChars = 2;
+
                 options.SignIn.RequireConfirmedEmail = true;
 
                 //tell framework to use these email token provider
                 options.Tokens.EmailConfirmationTokenProvider = "EmailConfirmation";
+
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
 
             })
             .AddDefaultTokenProviders()
